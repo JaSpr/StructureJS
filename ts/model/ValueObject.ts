@@ -1,6 +1,7 @@
 ///<reference path='../interface/IValueObject.ts'/>
 ///<reference path='../BaseObject.ts'/>
 ///<reference path='../util/Util.ts'/>
+///<reference path='./Collection.ts'/>
 
 /**
  * Value Object (VO) is a design pattern used to transfer data between software application subsystems.
@@ -125,6 +126,11 @@ module StructureTS
          */
         private _setData(key:any, data:any):void
         {
+            if (this[key] instanceof Collection) {
+                // If property is an instance of a Collection class and has already been created.
+                // Then pass the data in to the add method.
+                this[key].add(data);
+            }
             if (data instanceof Array)
             {
                 var temp:Array<any> = [];

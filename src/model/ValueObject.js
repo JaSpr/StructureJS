@@ -3,15 +3,15 @@
  */
 (function(root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define(['../util/Extend', '../BaseObject', '../util/Util'], factory);
+        define(['../util/Extend', '../BaseObject', '../util/Util', './Collection'], factory);
     } else if (typeof module !== 'undefined' && module.exports) { //Node
-        module.exports = factory(require('../util/Extend'), require('../BaseObject'), require('../util/Util'));
+        module.exports = factory(require('../util/Extend'), require('../BaseObject'), require('../util/Util'), require('./Collection'));
     } else {
         /*jshint sub:true */
         root.structurejs = root.structurejs || {};
-        root.structurejs.ValueObject = factory(root.structurejs.Extend, root.structurejs.BaseObject, root.structurejs.Util);
+        root.structurejs.ValueObject = factory(root.structurejs.Extend, root.structurejs.BaseObject, root.structurejs.Util, root.structurejs.Collection);
     }
-}(this, function(Extend, BaseObject, Util) {
+}(this, function(Extend, BaseObject, Util, Collection) {
     'use strict';
 
     /**
@@ -127,7 +127,12 @@
          * @private
          */
         ValueObject.prototype._setData = function (key, data) {
-            if (data instanceof Array) {
+            if (this[key] instanceof Collection) {
+                // If property is an instance of a Collection class and has already been created.
+                // Then pass the data in to the add method.
+                this[key].add(data);
+            }
+            else if (data instanceof Array) {
                 var temp = [];
                 var len = data.length;
                 if ((this[key][0] instanceof ValueObject.constructor && data[0] instanceof ValueObject.constructor) === false) {
